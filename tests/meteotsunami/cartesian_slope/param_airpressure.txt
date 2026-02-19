@@ -1,0 +1,8 @@
+HAT   % wave_shape: SINE or HAT
+500.0d0  % storm%wave_amplitude
+20.0d3  % storm%wave_wavelength
+1.0d0  % storm%wave_count (e.g., 0.5 for half-wave, 2.0 for two waves)
+40.0d0  % storm%wave_speed
+0.0d0  0.0d0 % storm%wave_origin
+30.0d0  % theta_deg
+0.0d0  % storm%wave_cross_width
