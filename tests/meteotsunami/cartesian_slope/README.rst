@@ -54,7 +54,7 @@ Planewave parameter file format
 
 Notes:
 
-1. ``wave_origin`` is treated as the moving wave front.
+1. ``wave_origin`` is treated as the upper-left corner of the moving wave front.
 2. The wave train trails behind the front along the propagation direction.
 3. ``wave_count = 1`` corresponds to one full wavelength (peak + trough).
 

@@ -338,7 +338,7 @@ contains
         write(*, "('  wavelength [m] = ', d16.8)") storm%wave_wavelength
         write(*, "('  wave_count [-] = ', d16.8)") storm%wave_count
         write(*, "('  speed [m/s] = ', d16.8)") storm%wave_speed
-        write(*, "('  origin [m] = ', 2d16.8)") storm%wave_origin
+        write(*, "('  origin (upper-left front corner) = ', 2d16.8)") storm%wave_origin
         write(*, "('  direction [deg] = ', d16.8)") theta_deg
         write(*, "('  cross width [m] = ', d16.8)") storm%wave_cross_width
 
@@ -756,19 +756,27 @@ contains
         real(kind=8) :: x, y, xi, eta, pulse
         real(kind=8) :: dx_local, dy_local
         real(kind=8) :: travel(2), tangent(2), normal(2)
-        real(kind=8) :: travel_xy(2), origin_xy(2)
+        real(kind=8) :: travel_xy(2), origin_xy(2), front_center_xy(2)
+        real(kind=8) :: front_center0(2), half_width
         real(kind=8) :: phase, local_phase, total_length
 
         tangent = storm%wave_direction
         normal = [-tangent(2), tangent(1)]
         total_length = storm%wave_count * storm%wave_wavelength
+        half_width = 0.d0
+        if (storm%wave_cross_width > 0.d0) half_width = 0.5d0 * storm%wave_cross_width
+
         if (coordinate_system == 2) then
             ! In lat/lon mode, xy2latlon expects absolute projected y, not a relative dy.
             origin_xy = latlon2xy(storm%wave_origin, storm%wave_origin)
-            travel_xy = origin_xy + storm%wave_speed * t * tangent
+            ! Treat input wave_origin as the upper-left corner of the wave front.
+            front_center_xy = origin_xy - half_width * normal
+            travel_xy = front_center_xy + storm%wave_speed * t * tangent
             travel = xy2latlon(travel_xy, storm%wave_origin)
         else
-            travel = storm%wave_origin + storm%wave_speed * t * tangent
+            ! Treat input wave_origin as the upper-left corner of the wave front.
+            front_center0 = storm%wave_origin - half_width * normal
+            travel = front_center0 + storm%wave_speed * t * tangent
         end if
 
         do j = 1-mbc, my+mbc
@@ -789,7 +797,8 @@ contains
                 end if
 
                 pulse = 0.d0
-                ! wave_origin is the moving wave front; wave train trails behind.
+                ! wave_origin is the upper-left corner of the moving front.
+                ! Internally, travel is the corresponding moving front-center.
                 if (-total_length <= xi .and. xi <= 0.d0) then
                     if (storm%wave_cross_width <= 0.d0 .or.                   &
                         abs(eta) <= 0.5d0 * storm%wave_cross_width) then
