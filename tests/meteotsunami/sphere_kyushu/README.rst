@@ -53,6 +53,11 @@ Planewave parameter file format
 7. ``theta_deg`` [deg]
 8. ``wave_cross_width`` [m]
 
+Notes:
+
+1. ``wave_origin`` is treated as the upper-left corner of the moving wave front.
+2. The wave train trails behind the front along the propagation direction.
+
 Current case values
 -------------------
 
