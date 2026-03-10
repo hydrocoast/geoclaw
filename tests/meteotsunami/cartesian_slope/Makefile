@@ -103,13 +103,9 @@ SOURCES = \
 include $(CLAWMAKE)
 
 # Plot and save using Julia 
-.PHONY: topo all
-
-topo:
-	$(CLAW_PYTHON) maketopo.py
+.PHONY: all
 
 all: 
-	$(MAKE) topo
 	$(MAKE) .plots
 
 ### DO NOT remove this line - make depends on it ###

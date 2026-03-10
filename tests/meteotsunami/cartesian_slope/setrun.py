@@ -364,8 +364,9 @@ def setgeo(rundata):
     topo_data.topofiles = []
     # for topography, append lines of the form
     #   [topotype, fname]
-    topo_path = os.path.join(os.getcwd(),"simple_slope.tt3")
-    topo_data.topofiles.append([3,topo_path])
+    topo_data.topofiles.append([1, os.path.join(os.getcwd(), "region1.tt1")])
+    topo_data.topofiles.append([1, os.path.join(os.getcwd(), "region2.tt1")])
+    topo_data.topofiles.append([1, os.path.join(os.getcwd(), "region3.tt1")])
 
     # == fgout grids ==
     # new style as of v5.9.0 (old rundata.fixed_grid_data is deprecated)
