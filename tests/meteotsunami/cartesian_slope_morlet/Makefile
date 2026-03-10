@@ -102,9 +102,13 @@ SOURCES = \
 # Include Makefile containing standard definitions and make options:
 include $(CLAWMAKE)
 
-.PHONY: all
+.PHONY: topo all
+
+topo:
+	$(CLAW_PYTHON) maketopo.py
 
 all: 
+	$(MAKE) topo
 	$(MAKE) .plots
 
 ### DO NOT remove this line - make depends on it ###
