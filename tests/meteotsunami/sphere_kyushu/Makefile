@@ -102,7 +102,6 @@ SOURCES = \
 # Include Makefile containing standard definitions and make options:
 include $(CLAWMAKE)
 
-# Plot and save using Julia 
 .PHONY: topo all
 
 TOPO_FILE = $(CLAW)/geoclaw/scratch/gebco_2025_n35_s25_w122_e132.asc

@@ -1,0 +1,69 @@
+
+.. _geoclaw_examples_meteotsunami_slope:
+
+Meteotsunami Test on a Cartesian Slope
+======================================
+
+This directory contains a Cartesian-coordinate GeoClaw test for pressure-forced
+meteotsunami waves propagating over a sloping bathymetry.
+
+Main characteristics
+--------------------
+
+1. Coordinate system: Cartesian (meters), ``geo_data.coordinate_system = 1``.
+2. Domain: ``x in [0, 400e3]``, ``y in [0, 800e3]``.
+3. Bathymetry: staged as three ``topotype=1`` files:
+   ``region1.tt1``, ``region2.tt1``, and ``region3.tt1``.
+   The regions are ordered from west to east.
+4. Atmospheric forcing: custom planewave storm type
+   ``storm_specification_type = 10`` (see ``param_airpressure.txt``).
+5. Wind forcing is disabled; pressure forcing is enabled.
+
+Build and run
+-------------
+
+Run everything (simulation, plots)::
+
+    make all
+
+Common individual targets::
+
+    make .data
+    make .output
+    make .plots
+
+Input files
+-----------
+
+1. ``setrun.py``: domain, numerics, AMR, gauges, forcing switches.
+2. ``param_airpressure.txt``: planewave pressure parameters.
+3. ``maketopo.py``: optional helper for regenerating the three ``topotype=1`` files.
+
+Planewave parameter file format
+-------------------------------
+
+``param_airpressure.txt`` uses the following order:
+
+1. ``wave_shape``: ``SINE``, ``HAT``, or ``MORLET``
+2. ``wave_amplitude`` [Pa]
+3. ``wave_wavelength`` [m]
+4. ``wave_count`` [-]
+5. ``wave_speed`` [m/s]
+6. ``wave_origin`` [m, m]
+7. ``theta_deg`` [deg]
+8. ``wave_cross_width`` [m]
+
+Notes:
+
+1. ``wave_origin`` is treated as the upper-left corner of the moving wave front.
+2. The wave train trails behind the front along the propagation direction.
+3. ``wave_count = 1`` corresponds to one full wavelength (peak + trough).
+
+Plotting
+--------
+
+``setplot.py`` is tailored to this case and includes:
+
+1. Surface elevation map.
+2. Pressure anomaly map (``aux(7) - ambient_pressure``).
+3. Gauge time series.

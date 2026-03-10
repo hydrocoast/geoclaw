@@ -259,7 +259,7 @@ contains
             stop
         endif
 
-        ! First line can be wave shape token (SINE/HAT) or amplitude (legacy).
+        ! First line can be wave shape token (SINE/HAT/MORLET) or amplitude (legacy).
         read(data_file, "(a)", iostat=io_status) first_line
         if (io_status /= 0) then
             print *, "Could not read first line from planewave storm file."
@@ -277,6 +277,9 @@ contains
                     first_line_is_shape = .true.
                 case("HAT", "TRIANGLE", "TRIANGULAR")
                     storm%wave_shape = 2
+                    first_line_is_shape = .true.
+                case("MORLET", "WAVELET")
+                    storm%wave_shape = 3
                     first_line_is_shape = .true.
             end select
         end if
@@ -333,7 +336,7 @@ contains
         ! write(log_unit, "('  direction [deg] = ', d16.8)") theta_deg
         ! write(log_unit, "('  cross width [m] = ', d16.8)") storm%wave_cross_width
         write(*, *) "Type 10 planewave pressure wave"
-        write(*, "('  wave_shape = ', i0, ' (1=sine, 2=hat)')") storm%wave_shape
+        write(*, "('  wave_shape = ', i0, ' (1=sine, 2=hat, 3=morlet)')") storm%wave_shape
         write(*, "('  amplitude [Pa] = ', d16.8)") storm%wave_amplitude
         write(*, "('  wavelength [m] = ', d16.8)") storm%wave_wavelength
         write(*, "('  wave_count [-] = ', d16.8)") storm%wave_count
@@ -759,6 +762,7 @@ contains
         real(kind=8) :: travel_xy(2), origin_xy(2), front_center_xy(2)
         real(kind=8) :: front_center0(2), half_width
         real(kind=8) :: phase, local_phase, total_length
+        real(kind=8) :: center_phase, envelope_sigma, morlet_arg
 
         tangent = storm%wave_direction
         normal = [-tangent(2), tangent(1)]
@@ -813,6 +817,12 @@ contains
                                 else
                                     pulse = 4.d0 * local_phase - 4.d0
                                 end if
+                            case(3) ! localized Morlet wavelet over the full wave train
+                                center_phase = phase - 0.5d0 * storm%wave_count
+                                envelope_sigma = max(0.15d0 * storm%wave_count, 0.15d0)
+                                morlet_arg = 2.d0 * atan(1.d0) * 2.d0 * center_phase
+                                pulse = cos(5.d0 * morlet_arg) *                         &
+                                        exp(-0.5d0 * (center_phase / envelope_sigma)**2)
                             case default ! repeating sine pulse (one full cycle per wavelength)
                                 pulse = sin(atan(1.d0) * 8.d0 * phase)
                         end select

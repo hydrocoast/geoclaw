@@ -1,0 +1,8 @@
+MORLET   % wave_shape: SINE, HAT, or MORLET
+500.0d0  % storm%wave_amplitude
+50.0d3  % storm%wave_wavelength
+1.0d0  % storm%wave_count (e.g., 0.5 for half-wave, 2.0 for two waves)
+40.0d0  % storm%wave_speed
+0.0d0  0.0d0 % storm%wave_origin (upper-left corner of wave front)
+15.0d0  % theta_deg
+0.0d0  % storm%wave_cross_width
